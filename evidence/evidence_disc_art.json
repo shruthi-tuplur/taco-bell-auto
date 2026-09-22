@@ -1,0 +1,228 @@
+{
+    "artifact_id": "taco_bell_order_checkout_v1",
+    "version": "1.0.0",
+    "goal_description": "Order one Black Bean Crunchwrap Supreme customized with Fiesta Strips and Seasoned Rice, and one Nacho Fries (substitute if unavailable). The Black Bean Crunchwrap Supreme is located in the SPECIALTIES menu category, not Veggie Cravings -- go to Specialties first. When asked to choose a pickup method, select Drive-Thru if it's available; if only In-Store pickup is offered, select that instead. When asked when you'd like your order, select 'Now'. When asked to confirm the store/pickup selection, select 'Finish'. Reach the checkout / order review screen. NEVER enter payment info or complete the purchase.For the second item, add the PLAIN 'Large Nacho Fries' to the order \u2014 this is the basic/regular Nacho Fries item Do NOT select 'Diablo Ranch Steak Nacho Fries'or any other Nacho Fries variant \u2014 those are DIFFERENT products. The plain'Nacho Fries' item may appear further down the page, below the Diablo RanchSteak version. When you see multiple items containing the words 'Nacho Fries'pick the one whose name is EXACTLY 'Large Nacho Fries' and nothing else.",
+    "target_url": "https://www.tacobell.com/",
+    "created_at": "2026-09-18T20:09:38.980394+00:00",
+    "inputs": [
+      {
+        "name": "crunchwrap_modifications",
+        "type": "string",
+        "description": "Modifications to apply",
+        "required": true
+      }
+    ],
+    "outputs": [
+      {
+        "name": "order_total",
+        "type": "string",
+        "description": "Order subtotal"
+      },
+      {
+        "name": "substitution_used",
+        "type": "boolean",
+        "description": "Whether a fallback fired"
+      }
+    ],
+    "steps": [
+      {
+        "step_number": 1,
+        "action": "click",
+        "locator": {
+          "type": "text",
+          "value": "Start your order"
+        },
+        "description": "Need to start the order process by clicking the 'Start your order' link to set a location.",
+        "input_value": null,
+        "fallback": null
+      },
+      {
+        "step_number": 2,
+        "action": "type",
+        "locator": {
+          "type": "text",
+          "value": "Please enter City and State"
+        },
+        "description": "Need to enter the target location to find nearby Taco Bell stores.",
+        "input_value": null,
+        "fallback": null
+      },
+      {
+        "step_number": 3,
+        "action": "click",
+        "locator": {
+          "type": "role",
+          "value": "button"
+        },
+        "description": "Need to click the search button to find Taco Bell locations in San Jose, CA",
+        "input_value": null,
+        "fallback": null
+      },
+      {
+        "step_number": 4,
+        "action": "wait",
+        "locator": null,
+        "description": "The page is currently searching for stores as indicated by the 'Finding Stores...' heading and loading indicator, so I need to wait for the results to appear.",
+        "input_value": null,
+        "fallback": null
+      },
+      {
+        "step_number": 5,
+        "action": "click",
+        "locator": {
+          "type": "text",
+          "value": "Start Your Order"
+        },
+        "description": "Need to click the first store's 'Start Your Order' button to proceed with ordering from the nearest location.",
+        "input_value": null,
+        "fallback": null
+      },
+      {
+        "step_number": 6,
+        "action": "wait",
+        "locator": null,
+        "description": "The page is showing a modal dialog for choosing pickup method, which is still loading as indicated by the spinner image in the 'Choose pickup method' region.",
+        "input_value": null,
+        "fallback": null
+      },
+      {
+        "step_number": 7,
+        "action": "click",
+        "locator": {
+          "type": "text",
+          "value": "Drive-Thru"
+        },
+        "description": "The goal specifies to select Drive-Thru when available, and it is currently shown as an option on the pickup method dialog.",
+        "input_value": null,
+        "fallback": null
+      },
+      {
+        "step_number": 8,
+        "action": "click",
+        "locator": {
+          "type": "text",
+          "value": "Finish"
+        },
+        "description": "Need to confirm the store and pickup method selection by clicking 'Finish' to proceed to the menu.",
+        "input_value": null,
+        "fallback": null
+      },
+      {
+        "step_number": 9,
+        "action": "click",
+        "locator": {
+          "type": "text",
+          "value": "Specialties"
+        },
+        "description": "Need to navigate to the Specialties menu category to find the Black Bean Crunchwrap Supreme as specified in the goal.",
+        "input_value": null,
+        "fallback": null
+      },
+      {
+        "step_number": 10,
+        "action": "click",
+        "locator": {
+          "type": "role",
+          "value": "Black Bean Crunchwrap Supreme\u00ae"
+        },
+        "description": "Need to customize the Black Bean Crunchwrap Supreme with Fiesta Strips and Seasoned Rice as specified in the goal.",
+        "input_value": null,
+        "fallback": null
+      },
+      {
+        "step_number": 11,
+        "action": "click",
+        "locator": {
+          "type": "text",
+          "value": "Fiesta Strips"
+        },
+        "description": "Need to add Fiesta Strips to the Black Bean Crunchwrap Supreme customization as specified in the goal.",
+        "input_value": null,
+        "fallback": null
+      },
+      {
+        "step_number": 12,
+        "action": "click",
+        "locator": {
+          "type": "text",
+          "value": "Seasoned Rice"
+        },
+        "description": "Need to add Seasoned Rice to the Black Bean Crunchwrap Supreme customization as specified in the goal.",
+        "input_value": null,
+        "fallback": null
+      },
+      {
+        "step_number": 13,
+        "action": "click",
+        "locator": {
+          "type": "text",
+          "value": "Add to Order"
+        },
+        "description": "The Black Bean Crunchwrap Supreme is now customized with both Fiesta Strips and Seasoned Rice as shown by the pressed state of those buttons, so I need to add it to the order.",
+        "input_value": null,
+        "fallback": null
+      },
+      {
+        "step_number": 14,
+        "action": "click",
+        "locator": {
+          "type": "text",
+          "value": "Close cart"
+        },
+        "description": "Need to close the cart dialog to continue browsing the menu and add the Large Nacho Fries item.",
+        "input_value": null,
+        "fallback": null
+      },
+      {
+        "step_number": 15,
+        "action": "click",
+        "locator": {
+          "type": "role",
+          "value": "Large Nacho Fries"
+        },
+        "description": "Need to add the Large Nacho Fries to the order as specified in the goal.",
+        "input_value": null,
+        "fallback": null
+      },
+      {
+        "step_number": 16,
+        "action": "click",
+        "locator": {
+          "type": "text",
+          "value": "Add to Order"
+        },
+        "description": "Need to add the Large Nacho Fries to the order to complete the goal requirements.",
+        "input_value": null,
+        "fallback": null
+      },
+      {
+        "step_number": 17,
+        "action": "click",
+        "locator": {
+          "type": "text",
+          "value": "Close cart"
+        },
+        "description": "Need to close the cart dialog to see the checkout/order review screen as specified in the goal.",
+        "input_value": null,
+        "fallback": null
+      },
+      {
+        "step_number": 18,
+        "action": "click",
+        "locator": {
+          "type": "text",
+          "value": "Your Order"
+        },
+        "description": "I have successfully added both items to the order (Black Bean Crunchwrap Supreme with customizations and Large Nacho Fries), now I need to view the checkout/order review screen by clicking on the cart.",
+        "input_value": null,
+        "fallback": null
+      }
+    ],
+    "checkpoint": {
+      "locator": {
+        "type": "text",
+        "value": "Order Review"
+      },
+      "description": "Checkout review screen confirms items were added"
+    }
+  }

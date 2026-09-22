@@ -1,0 +1,20 @@
+# secrets
+.env
+*.env
+.env.local
+
+# python
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# os junk
+.DS_Store
+
+# playwright
+test-results/
+playwright-report/
+
+# our debug artifacts we don't need in git
+failure_tree.txt
