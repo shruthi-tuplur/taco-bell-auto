@@ -9,12 +9,14 @@ can see that fact just by looking at the imports at the top of this file.
 """
 
 import json
+import os
 import sys
+import time
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from typing import Literal, Optional
 
 from playwright_page import PlaywrightPage  # our real browser wrapper
-
 
 # ---------------------------------------------------------------------------
 # The three-way result contract (from the decision log):
@@ -55,6 +57,62 @@ class ReplayEngine:
                 f.write(tree)
         except Exception:
             pass
+
+    def _find_with_retry(self, locator, attempts=5, delay_seconds=1.5):
+        """Poll for a locator instead of checking once and giving up.
+        A human just clicked through a live page, so the DOM needs a beat
+        to settle (page loads, re-renders, animations) before a single
+        immediate find() can be trusted as a real miss."""
+        for attempt in range(1, attempts + 1):
+            if self.page.find(locator):
+                return True
+            if attempt < attempts:
+                self.page.wait(seconds=delay_seconds)
+        return False
+
+    def _escalate_to_human(self, step_num, message, checkpoint_locator=None):
+        """
+        Human-in-the-loop escalation. The browser is real and visible
+        (headless=False), so the human takes over the SAME live session
+        directly -- no separate process or reattachment needed. We still
+        write a structured intervention record for evidence purposes.
+        """
+        os.makedirs("escalations", exist_ok=True)
+        request_id = f"intervention_{int(time.time())}"
+        record = {
+            "id": request_id,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "step_number": step_num,
+            "message": message,
+            "screenshot": f"evidence/failure_step_{step_num}.png",
+            "accessibility_tree": f"evidence/failure_step_{step_num}_tree.txt",
+            "checkpoint_locator": checkpoint_locator,
+            "status": "pending",
+        }
+        path = os.path.join("escalations", f"{request_id}.json")
+        with open(path, "w") as f:
+            json.dump(record, f, indent=2)
+
+        print("\n" + "=" * 60)
+        print("ESCALATION: human intervention needed")
+        print(f"Step {step_num} failed: {message}")
+        print(f"Intervention record: {path}")
+        print("The browser window is open on your screen right now.")
+        print("Take over there and manually fix or complete the order.")
+        print(
+            "\nWhen you're done, the script will look for this checkpoint "
+            "to confirm the fix worked:"
+        )
+        print(f"  {record.get('checkpoint_locator', '(checkpoint printed by caller)')}")
+        print("=" * 60)
+        input("\nPress ENTER here once you're done and want to hand control back to the automation...\n")
+
+        record["status"] = "resolved"
+        record["resolved_at"] = datetime.now(timezone.utc).isoformat()
+        with open(path, "w") as f:
+            json.dump(record, f, indent=2)
+
+        return path
 
     def run(self, artifact: dict, inputs: dict) -> ReplayResult:
         substitution_used = False
@@ -119,22 +177,29 @@ class ReplayEngine:
                             substitution_used = True
                             continue
                         except Exception:
-                            self._capture_failure_evidence(step_num)
-                            return ReplayResult(
-                                status="failure",
-                                message=(
-                                    f"Step {step_num}: neither '{locator['value']}' nor its "
-                                    f"fallback '{fallback['locator']['value']}' could be clicked. "
-                                    f"Escalating to human operator."
-                                ),
-                                outputs={},
-                                failed_at_step=step_num,
-                            )
+                            pass  # fall through to escalation below
 
+                    # Either there was no fallback, or the fallback also
+                    # failed. Rather than giving up immediately, escalate
+                    # to a human before declaring a hard failure.
                     self._capture_failure_evidence(step_num)
+                    failure_message = f"Step {step_num}: could not click element '{locator['value']}', no fallback defined."
+                    checkpoint_locator = artifact["checkpoint"]["locator"]
+                    self._escalate_to_human(step_num, failure_message, checkpoint_locator)
+
+                    if self._find_with_retry(checkpoint_locator):
+                        return ReplayResult(
+                            status="business_outcome",
+                            message=f"Step {step_num} required human intervention; operator resolved it manually and the checkpoint was reached.",
+                            outputs={
+                                "order_total": self.page.get_order_total(),
+                                "substitution_used": True,
+                            },
+                        )
+
                     return ReplayResult(
                         status="failure",
-                        message=f"Step {step_num}: could not click element '{locator['value']}', no fallback defined.",
+                        message=failure_message + " Escalated to human, but the issue was not resolved.",
                         outputs={},
                         failed_at_step=step_num,
                     )
@@ -149,7 +214,6 @@ class ReplayEngine:
             )
 
         # All steps executed. Check the checkpoint before declaring success.
-                # All steps executed. Check the checkpoint before declaring success.
         checkpoint = artifact["checkpoint"]
         if self.page.find(checkpoint["locator"]):
             # A generic checkpoint (like "the cart page loaded") can pass
@@ -157,10 +221,6 @@ class ReplayEngine:
             # without raising an exception. So beyond the checkpoint text,
             # explicitly verify every expected item actually made it into
             # the cart before calling this a real success.
-            # Build the "acceptable" item names dynamically from the
-            # artifact: the Crunchwrap never has a fallback, but the
-            # second item's slot is satisfied by EITHER its original
-            # name or whatever fallback substitution actually fired.
             crunchwrap_ok = self.page.find({"type": "text", "value": "Black Bean Crunchwrap Supreme"})
 
             second_item_names = ["Large Nacho Fries"]

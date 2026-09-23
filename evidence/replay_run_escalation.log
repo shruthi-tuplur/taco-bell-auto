@@ -1,0 +1,19 @@
+--- Replaying artifact: evidence/discovered_artifact_BROKEN_demo.json ---
+
+============================================================
+ESCALATION: human intervention needed
+Step 15 failed: Step 15: could not click element 'McNuggets', no fallback defined.
+Intervention record: escalations/intervention_1790190220.json
+The browser window is open on your screen right now.
+Take over there and manually fix or complete the order.
+
+When you're done, the script will look for this checkpoint to confirm the fix worked:
+  {'type': 'text', 'value': 'My Bag'}
+============================================================
+
+Press ENTER here once you're done and want to hand control back to the automation...
+
+Status: business_outcome
+Message: Step 15 required human intervention; operator resolved it manually and the checkpoint was reached.
+Outputs: {'order_total': '$9.17', 'substitution_used': True}
+Press ENTER in the terminal to close the browser...

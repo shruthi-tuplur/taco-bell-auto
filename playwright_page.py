@@ -13,6 +13,9 @@ class PlaywrightPage:
         self.page = context.new_page()
         self.actions_log = []
         self.last_typed_field = None
+        self.browser = self.playwright.chromium.launch(
+            headless=headless
+        )
 
     def _pick_best_candidate(self, candidate_names, target_value):
         """
