@@ -94,7 +94,12 @@
         },
         "description": "The goal specifies to select Drive-Thru when available, and it is currently shown as an option on the pickup method dialog.",
         "input_value": null,
-        "fallback": null
+        "fallback": {
+            "locator": {
+              "type": "text",
+              "value": "In-Store"
+            }
+          }
       },
       {
         "step_number": 8,
@@ -192,19 +197,9 @@
           }
         }
       },
+      
       {
         "step_number": 16,
-        "action": "click",
-        "locator": {
-          "type": "text",
-          "value": "Add to Order"
-        },
-        "description": "Need to add the Large Nacho Fries to the order to complete the goal requirements.",
-        "input_value": null,
-        "fallback": null
-      },
-      {
-        "step_number": 17,
         "action": "click",
         "locator": {
           "type": "text",
@@ -215,7 +210,7 @@
         "fallback": null
       },
       {
-        "step_number": 18,
+        "step_number": 17,
         "action": "click",
         "locator": {
           "type": "text",

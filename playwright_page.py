@@ -41,6 +41,48 @@ class PlaywrightPage:
                 best_i = i
         return best_i
 
+    def _find_scoped_button(self, product_name, button_text):
+        """
+        Two card patterns exist on this site:
+        1. "Specialty" items: the button's OWN accessible name IS the
+           full product name, and its visible text is the action
+           ("Add to Order" / "Customize"). e.g. Black Bean Crunchwrap
+           Supreme.
+        2. "Value/combo" items: the button's accessible name is just the
+           generic action text ("Add to Order") with no product name at
+           all -- it's just positioned right after the product's heading
+           in DOM order. e.g. Nacho Fries, Large Nacho Fries.
+        Try pattern 1 first, then fall back to pattern 2.
+        """
+        # Pattern 1: button's accessible name IS the product name
+        try:
+            named = self.page.get_by_role("button", name=product_name, exact=False)
+            count = named.count()
+            for i in range(count):
+                candidate = named.nth(i)
+                if button_text.lower() in candidate.inner_text().lower():
+                    return candidate
+        except Exception:
+            pass
+
+        # Pattern 2: generic button with no product name in its own
+        # accessible name, positioned right after the product's
+        # heading/link in DOM order
+        clean_name = (
+            product_name.replace("®", "").replace("™", "").replace("©", "").strip()
+        )
+        try:
+            product_el = self.page.get_by_text(clean_name, exact=False).first
+            following_button = product_el.locator(
+                f"xpath=following::button[normalize-space(.)='{button_text}'][1]"
+            )
+            if following_button.is_visible(timeout=400):
+                return following_button
+        except Exception:
+            pass
+
+        return None
+
     def navigate(self, url):
         self.page.goto(url)
         self.page.wait_for_load_state("networkidle")
@@ -81,26 +123,25 @@ class PlaywrightPage:
             return s.lower() if ignore_case else s
 
         if button_text:
-            named = self.page.get_by_role("button", name=raw_value, exact=False)
-            count = named.count()
+            match = self._find_scoped_button(raw_value, button_text)
 
-            candidates = []          # list of (index, accessible_name)
-            for i in range(count):
-                candidate = named.nth(i)
-                if button_text.lower() in candidate.inner_text().lower():
-                    # accessible name isn't directly exposed via inner_text, so we
-                    # grab the aria-label/accessible name approximation via inner_text
-                    # of the candidate itself as our best available proxy
-                    candidates.append((i, candidate.inner_text().strip()))
+            retries = 0
+            while match is None and retries < 5:
+                self.page.wait_for_timeout(400)
+                match = self._find_scoped_button(raw_value, button_text)
+                retries += 1
 
-            if candidates:
-                names_only = [c[1] for c in candidates]
-                best_local_idx = self._pick_best_candidate(names_only, raw_value)
-                best_i = candidates[best_local_idx][0]
-                named.nth(best_i).click()
+            if match is not None:
+                match.click()
                 self._settle()
+                self.actions_log.append(f"CLICK (scoped button_text match) '{raw_value}' -> '{button_text}'")
                 return True
-                
+
+            raise Exception(
+                f"Could not find a button with text '{button_text}' for "
+                f"product '{raw_value}' via either accessible-name or "
+                f"DOM-proximity matching, even after retrying."
+            )
 
         # Attempt 1: match by ACCESSIBLE NAME (same string shown in the
         # accessibility tree the LLM reasons from) -- this is more reliable
@@ -165,12 +206,6 @@ class PlaywrightPage:
         except Exception:
             pass
         self.page.wait_for_timeout(300)
-    def _settle(self):
-        try:
-            self.page.wait_for_load_state("networkidle", timeout=4000)
-        except Exception:
-            pass
-        self.page.wait_for_timeout(300)
 
     def get_order_total(self):
         try:
@@ -203,7 +238,7 @@ class PlaywrightPage:
             return "\n".join(lines[:500])
         except Exception as e:
             return f"(could not get accessibility snapshot: {e})"
-        
+
     def wait(self, seconds=2):
         self.page.wait_for_timeout(seconds * 1000)
         self.actions_log.append(f"WAIT {seconds}s")

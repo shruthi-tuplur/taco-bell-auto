@@ -1,0 +1,6 @@
+--- Replaying artifact: evidence/discovered_artifact_sub.json ---
+
+Status: business_outcome
+Message: Order completed, but a fallback substitution was used.
+Outputs: {'order_total': '$9.17', 'substitution_used': True}
+Press ENTER in the terminal to close the browser...

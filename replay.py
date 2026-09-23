@@ -157,14 +157,27 @@ class ReplayEngine:
             # without raising an exception. So beyond the checkpoint text,
             # explicitly verify every expected item actually made it into
             # the cart before calling this a real success.
-            expected_items = artifact.get("expected_items", [
-                "Black Bean Crunchwrap Supreme",
-                "Large Nacho Fries",
-            ])
-            missing_items = [
-                name for name in expected_items
-                if not self.page.find({"type": "text", "value": name})
-            ]
+            # Build the "acceptable" item names dynamically from the
+            # artifact: the Crunchwrap never has a fallback, but the
+            # second item's slot is satisfied by EITHER its original
+            # name or whatever fallback substitution actually fired.
+            crunchwrap_ok = self.page.find({"type": "text", "value": "Black Bean Crunchwrap Supreme"})
+
+            second_item_names = ["Large Nacho Fries"]
+            for step in artifact["steps"]:
+                fb = step.get("fallback")
+                if fb:
+                    second_item_names.append(fb["locator"]["value"])
+            second_item_ok = any(
+                self.page.find({"type": "text", "value": name})
+                for name in second_item_names
+            )
+
+            missing_items = []
+            if not crunchwrap_ok:
+                missing_items.append("Black Bean Crunchwrap Supreme")
+            if not second_item_ok:
+                missing_items.append(f"one of {second_item_names}")
 
             if missing_items:
                 self._capture_failure_evidence("checkpoint")

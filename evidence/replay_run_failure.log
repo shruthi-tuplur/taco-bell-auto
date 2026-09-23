@@ -1,4 +1,4 @@
---- Replaying artifact: evidence/discovered_artifact.json ---
+--- Replaying artifact: evidence/discovered_artifact_BROKEN_demo.json ---
 
 Status: failure
 Message: Step 15: could not click element 'McNuggets', no fallback defined.
