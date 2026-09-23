@@ -1,0 +1,7 @@
+--- Replaying artifact: evidence/discovered_artifact.json ---
+
+Status: failure
+Message: Step 15: could not click element 'McNuggets', no fallback defined.
+Outputs: {}
+Failed at step: 15
+Press ENTER in the terminal to close the browser...

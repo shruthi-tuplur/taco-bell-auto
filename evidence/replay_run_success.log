@@ -1,0 +1,6 @@
+--- Replaying artifact: evidence/discovered_artifact.json ---
+
+Status: success
+Message: Order completed and checkout review screen confirmed, both items verified present.
+Outputs: {'order_total': '$11.47', 'substitution_used': False}
+Press ENTER in the terminal to close the browser...

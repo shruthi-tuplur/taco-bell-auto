@@ -174,6 +174,13 @@ class PlaywrightPage:
 
     def get_order_total(self):
         try:
+            full_text = self.page.inner_text("body")
+            match = _re.search(r"Subtotal\s*\$?\s*([\d,]+\.\d{2})", full_text, _re.IGNORECASE)
+            if match:
+                return f"${match.group(1)}"
+        except Exception:
+            pass
+        try:
             return self.page.get_by_text("$", exact=False).first.inner_text()
         except Exception:
             return "unknown"
@@ -196,6 +203,10 @@ class PlaywrightPage:
             return "\n".join(lines[:500])
         except Exception as e:
             return f"(could not get accessibility snapshot: {e})"
+        
+    def wait(self, seconds=2):
+        self.page.wait_for_timeout(seconds * 1000)
+        self.actions_log.append(f"WAIT {seconds}s")
 
     def type_text(self, locator, text):
         value = locator["value"]

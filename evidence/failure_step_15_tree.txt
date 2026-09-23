@@ -1,0 +1,259 @@
+- banner:
+  - link "Taco Bell Home":
+    - /url: /
+  - navigation:
+    - link "Menu":
+      - /url: /food?store=028835
+    - link "Delivery":
+      - /url: /delivery
+    - link "Rewards":
+      - /url: /rewards
+    - link "Gift Cards":
+      - /url: /gift-cards
+    - link "Purpose":
+      - /url: /purpose
+    - img
+    - link "People":
+      - /url: /purpose/people
+    - link "Planet":
+      - /url: /purpose/planet
+    - link "Food":
+      - /url: /purpose/food
+  - navigation "Store location and pickup information":
+    - text: Check in at drive-thru speaker 2600 Homestead Rd, Santa Clara, CA 95051
+    - link "Change store location":
+      - /url: /locations
+      - text: Change
+  - img
+  - link "Your account":
+    - /url: /login/yum
+    - img "Your account"
+  - text: "|"
+  - link "Taco Bell Rewards":
+    - /url: "#"
+    - img "Taco Bell Rewards"
+  - link "Your Order 1":
+    - /url: /order/cart
+    - img "Your Order"
+    - text: "1"
+  - link "Best Sellers":
+    - /url: /food/best-sellers?store=028835
+  - link "Featured":
+    - /url: /food/featured?store=028835
+  - link "Online Exclusives":
+    - /url: /food/online-exclusives?store=028835
+  - link "Luxe Value Menu":
+    - /url: /food/luxe-value-menu?store=028835
+  - link "Cantina Chicken Menu":
+    - /url: /food/cantina-chicken-menu?store=028835
+  - link "Boxes & Combos":
+    - /url: /food/boxes-and-combos?store=028835
+  - link "Tacos":
+    - /url: /food/tacos?store=028835
+  - link "Burritos":
+    - /url: /food/burritos?store=028835
+  - link "Specialties":
+    - /url: /food/specialties?store=028835
+    - heading "Specialties" [level=1]
+  - link "Snacks & Sweets":
+    - /url: /food/snacks-sweets?store=028835
+  - link "Quesadillas":
+    - /url: /food/quesadillas?store=028835
+  - link "Drinks":
+    - /url: /food/drinks?store=028835
+  - link "Nachos":
+    - /url: /food/nachos?store=028835
+  - link "Groups":
+    - /url: /food/party-packs?store=028835
+  - link "Veggie Cravings":
+    - /url: /food/vegetarian?store=028835
+  - link "Bowls":
+    - /url: /food/bowls?store=028835
+  - link "Breakfast":
+    - /url: /food/breakfast?store=028835
+- main:
+  - region "Products":
+    - heading "Products" [level=2]
+    - link "Steak Gordita Crunch Duos 2pk":
+      - /url: /food/specialties/steak-gordita-crunch-duos-2pk?store=028835
+      - img "Steak Gordita Crunch Duos 2pk"
+    - link "Steak Gordita Crunch Duos 2pk":
+      - /url: /food/specialties/steak-gordita-crunch-duos-2pk?store=028835
+      - heading "Steak Gordita Crunch Duos 2pk" [level=4]
+    - paragraph: $5.49 | 340 Cal
+    - button "Steak Gordita Crunch Duos 2pk": Add to Order
+    - button "Steak Gordita Crunch Duos 2pk": Customize
+    - link "Slow-Roasted Chicken Gordita Crunch Duos 2pk":
+      - /url: /food/specialties/slow-roasted-chicken-gordita-crunch-duos-2pk?store=028835
+      - img "Slow-Roasted Chicken Gordita Crunch Duos 2pk"
+    - link "Slow-Roasted Chicken Gordita Crunch Duos 2pk":
+      - /url: /food/specialties/slow-roasted-chicken-gordita-crunch-duos-2pk?store=028835
+      - heading "Slow-Roasted Chicken Gordita Crunch Duos 2pk" [level=4]
+    - paragraph: $5.49 | 340 Cal
+    - button "Slow-Roasted Chicken Gordita Crunch Duos 2pk": Add to Order
+    - button "Slow-Roasted Chicken Gordita Crunch Duos 2pk": Customize
+    - link "Creamy Chipotle Crispy Chicken Crunchwrap Slider":
+      - /url: /food/specialties/creamy-chipotle-crispy-chicken-crunchwrap-slider?store=028835
+      - img "Creamy Chipotle Crispy Chicken Crunchwrap Slider"
+    - link "Creamy Chipotle Crispy Chicken Crunchwrap Slider":
+      - /url: /food/specialties/creamy-chipotle-crispy-chicken-crunchwrap-slider?store=028835
+      - heading "Creamy Chipotle Crispy Chicken Crunchwrap Slider" [level=4]
+    - paragraph: $3.29 | 320 Cal
+    - button "Creamy Chipotle Crispy Chicken Crunchwrap Slider": Add to Order
+    - button "Creamy Chipotle Crispy Chicken Crunchwrap Slider": Customize
+    - link "Diablo Ranch Crispy Chicken Crunchwrap Slider":
+      - /url: /food/burritos/diablo-ranch-crispy-chicken-crunchwrap-slider?store=028835
+      - img "Diablo Ranch Crispy Chicken Crunchwrap Slider"
+    - link "Diablo Ranch Crispy Chicken Crunchwrap Slider":
+      - /url: /food/burritos/diablo-ranch-crispy-chicken-crunchwrap-slider?store=028835
+      - heading "Diablo Ranch Crispy Chicken Crunchwrap Slider" [level=4]
+    - paragraph: $3.29 | 320 Cal
+    - button "Diablo Ranch Crispy Chicken Crunchwrap Slider": Add to Order
+    - button "Diablo Ranch Crispy Chicken Crunchwrap Slider": Customize
+    - link "Diablo Ranch Steak Nacho Fries":
+      - /url: /food/specialties/diablo-ranch-steak-nacho-fries?store=028835
+      - img "Diablo Ranch Steak Nacho Fries"
+    - link "Diablo Ranch Steak Nacho Fries":
+      - /url: /food/specialties/diablo-ranch-steak-nacho-fries?store=028835
+      - heading "Diablo Ranch Steak Nacho Fries" [level=4]
+    - paragraph: $6.29 | 500 Cal
+    - button "Diablo Ranch Steak Nacho Fries": Add to Order
+    - button "Diablo Ranch Steak Nacho Fries": Customize
+    - link "5 Piece Crispy Chicken Nuggets":
+      - /url: /food/deals-and-combos/5-piece-crispy-chicken-nuggets?store=028835
+      - img "5 Piece Crispy Chicken Nuggets"
+    - link "5 Piece Crispy Chicken Nuggets":
+      - /url: /food/deals-and-combos/5-piece-crispy-chicken-nuggets?store=028835
+      - heading "5 Piece Crispy Chicken Nuggets" [level=4]
+    - paragraph: $4.99 | 540 Cal
+    - link "Customize":
+      - /url: /food/deals-and-combos/5-piece-crispy-chicken-nuggets?store=028835
+    - link "10 Piece Crispy Chicken Nuggets":
+      - /url: /food/deals-and-combos/10-piece-crispy-chicken-nuggets?store=028835
+      - img "10 Piece Crispy Chicken Nuggets"
+    - link "10 Piece Crispy Chicken Nuggets":
+      - /url: /food/deals-and-combos/10-piece-crispy-chicken-nuggets?store=028835
+      - heading "10 Piece Crispy Chicken Nuggets" [level=4]
+    - paragraph: $8.99 | 1060 Cal
+    - link "Customize":
+      - /url: /food/deals-and-combos/10-piece-crispy-chicken-nuggets?store=028835
+    - link "Mini Taco Salad":
+      - /url: /food/specialties/mini-taco-salad?store=028835
+      - img "Mini Taco Salad"
+    - link "Mini Taco Salad":
+      - /url: /food/specialties/mini-taco-salad?store=028835
+      - heading "Mini Taco Salad" [level=4]
+    - paragraph: $2.99 | 280 Cal
+    - button "Mini Taco Salad": Add to Order
+    - button "Mini Taco Salad": Customize
+    - link "Avocado Ranch Chicken Stacker":
+      - /url: /food/specialties/avocado-ranch-chicken-stacker?store=028835
+      - img "Avocado Ranch Chicken Stacker"
+    - link "Avocado Ranch Chicken Stacker":
+      - /url: /food/specialties/avocado-ranch-chicken-stacker?store=028835
+      - heading "Avocado Ranch Chicken Stacker" [level=4]
+    - paragraph: $3.29 | 350 Cal
+    - button "Avocado Ranch Chicken Stacker": Add to Order
+    - button "Avocado Ranch Chicken Stacker": Customize
+    - link "Large Nacho Fries":
+      - /url: /food/deals-and-combos/large-nacho-fries?store=028835
+      - img "Large Nacho Fries"
+    - link "Large Nacho Fries":
+      - /url: /food/deals-and-combos/large-nacho-fries?store=028835
+      - heading "Large Nacho Fries" [level=4]
+    - paragraph: $3.59 | 500 Cal
+    - img "Vegetarian"
+    - button "Add to Order"
+    - link "Customize":
+      - /url: /food/deals-and-combos/large-nacho-fries?store=028835
+    - link "Nacho Fries":
+      - /url: /food/deals-and-combos/nacho-fries?store=028835
+      - img "Nacho Fries"
+    - link "Nacho Fries":
+      - /url: /food/deals-and-combos/nacho-fries?store=028835
+      - heading "Nacho Fries" [level=4]
+    - paragraph: $2.99 | 350 Cal
+    - img "Vegetarian"
+    - button "Add to Order"
+    - link "Customize":
+      - /url: /food/deals-and-combos/nacho-fries?store=028835
+    - link "3 Cheese Chicken Flatbread Melt":
+      - /url: /food/quesadillas/3-cheese-chicken-flatbread-melt?store=028835
+      - img "3 Cheese Chicken Flatbread Melt"
+    - link "3 Cheese Chicken Flatbread Melt":
+      - /url: /food/quesadillas/3-cheese-chicken-flatbread-melt?store=028835
+      - heading "3 Cheese Chicken Flatbread Melt" [level=4]
+    - paragraph: $2.79 | 320 Cal
+    - button "3 Cheese Chicken Flatbread Melt": Add to Order
+    - button "3 Cheese Chicken Flatbread Melt": Customize
+    - link "Mexican Pizza":
+      - /url: /food/specialties/mexican-pizza?store=028835
+      - img "Mexican Pizza"
+    - link "Mexican Pizza":
+      - /url: /food/specialties/mexican-pizza?store=028835
+      - heading "Mexican Pizza" [level=4]
+    - paragraph: $6.99 | 530 Cal
+    - button "Mexican Pizza": Add to Order
+    - button "Mexican Pizza": Customize
+    - link "Crunchwrap Supreme®":
+      - /url: /food/specialties/crunchwrap-supreme?store=028835
+      - img "Crunchwrap Supreme®"
+    - link "Crunchwrap Supreme®":
+      - /url: /food/specialties/crunchwrap-supreme?store=028835
+      - heading "Crunchwrap Supreme®" [level=4]
+    - paragraph: $7.99 | 530 Cal
+    - button "Crunchwrap Supreme®": Add to Order
+    - button "Crunchwrap Supreme®": Customize
+    - link "Black Bean Crunchwrap Supreme®":
+      - /url: /food/specialties/black-bean-crunchwrap-supreme?store=028835
+      - img "Black Bean Crunchwrap Supreme®"
+    - link "Black Bean Crunchwrap Supreme®":
+      - /url: /food/specialties/black-bean-crunchwrap-supreme?store=028835
+      - heading "Black Bean Crunchwrap Supreme®" [level=4]
+    - paragraph: $6.99 | 520 Cal
+    - img "Vegetarian"
+    - button "Black Bean Crunchwrap Supreme®": Add to Order
+    - button "Black Bean Crunchwrap Supreme®": Customize
+    - link "Cheesy Roll Up":
+      - /url: /food/sides/cheesy-roll-up?store=028835
+      - img "Cheesy Roll Up"
+    - link "Cheesy Roll Up":
+      - /url: /food/sides/cheesy-roll-up?store=028835
+      - heading "Cheesy Roll Up" [level=4]
+    - paragraph: $1.29 | 170 Cal
+    - img "Vegetarian"
+    - button "Cheesy Roll Up": Add to Order
+    - button "Cheesy Roll Up": Customize
+  - heading "Taco Bell® specialties near Santa Clara, CA" [level=2]
+  - heading "Order specialties online or visit the Taco Bell location nearest you at 2600 Homestead Rd, Santa Clara, CA" [level=3]
+  - paragraph:
+    - text: Think nothing can be better than your favorite Taco Bell menu items? With our iconic Taco Bell Specialties, you better think again. We have a great selection of delicious specialties like the
+    - link "Mexican Pizza":
+      - /url: /food/specialties/mexican-pizza
+    - text: and
+    - link "Crunchwrap Supreme®":
+      - /url: /food/specialties/crunchwrap-supreme
+    - text: .
+  - paragraph:
+    - text: Stop by your local Taco Bell at 2600 Homestead Rd, Santa Clara, CA; and pick up
+    - link "burritos":
+      - /url: /food/burritos?store=028835
+    - text: ","
+    - link "quesadillas":
+      - /url: /food/quesadillas?store=028835
+    - text: and more classics or order online and pick up at your local Taco Bell restaurant today.
+  - paragraph:
+    - img "Vegetarian Info Icon"
+    - text: American Vegetarian Association certified Vegetarian food items, are lacto-ovo, allowing consumption of dairy and eggs but not animal byproducts. We may use the same frying oil to prepare menu items that could contain meat. Vegetarian and meat ingredients are handled in common, and cross contact may occur, which may not be acceptable to certain types of vegetarian diets. Neither Taco Bell®, our employees, nor our franchisees nor the AVA assume any responsibility for such cross contact.
+  - paragraph:
+    - text: "Warning:"
+    - img "Sodium Warning Icon"
+    - text: indicates that the sodium (salt) content of this item is higher than the total daily recommended limit (2,300 mg). High sodium intake can increase blood pressure and risk of heart disease and stroke.
+  - paragraph:
+    - img "Sodium Warning"
+    - text: ": Sodium content higher than daily recommended limit (2,300 mg). High sodium intake can increase blood pressure and risk of heart disease and stroke."
+  - paragraph:
+    - text: We prepare and serve products containing egg, milk, soy, wheat, or other allergens. Our products are prepared on shared equipment and in the same kitchen area and we cannot guarantee that cross contact with allergens will not occur. Ingredient and allergen information for menu items is available at
+    - link "https://www.tacobell.com/nutrition/allergen-info":
+      - /url: https://www.tacobell.com/nutrition/allergen-info
+    - text: .

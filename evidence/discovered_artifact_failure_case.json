@@ -123,7 +123,8 @@
       "action": "click",
       "locator": {
         "type": "role",
-        "value": "Black Bean Crunchwrap Supreme\u00ae"
+        "value": "Black Bean Crunchwrap Supreme\u00ae",
+        "button_text": "Customize"
       },
       "description": "Need to customize the Black Bean Crunchwrap Supreme with Fiesta Strips and Seasoned Rice as specified in the goal.",
       "input_value": null,
@@ -178,7 +179,8 @@
       "action": "click",
       "locator": {
         "type": "role",
-        "value": "Large Nacho Fries"
+        "value": "McNuggets",
+        "button_text": "Add to Order"
       },
       "description": "Need to add the Large Nacho Fries to the order as specified in the goal.",
       "input_value": null,
@@ -221,7 +223,7 @@
   "checkpoint": {
     "locator": {
       "type": "text",
-      "value": "Order Review"
+      "value": "My Bag"
     },
     "description": "Checkout review screen confirms items were added"
   }
