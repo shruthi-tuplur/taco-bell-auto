@@ -1,0 +1,308 @@
+{
+  "artifact_id": "taco_bell_order_checkout",
+  "version": "2.0.0",
+  "goal_description": "Order one Black Bean Crunchwrap Supreme customized with Fiesta Strips and Seasoned Rice, and one {{side_item}}. Use the location {{location}} when asked for a city/store. The Black Bean Crunchwrap Supreme is in the SPECIALTIES menu category, not Veggie Cravings, so go to Specialties first. When asked to choose a pickup method, select Drive-Thru if it's available; if only In-Store pickup is offered, select that instead. When asked when you'd like your order, select 'Now'. When asked to confirm the store/pickup selection, select 'Finish'. Reach the cart / order review screen. NEVER enter payment info or complete the purchase. For the second item, add the item whose name is EXACTLY {{side_item}}. Do NOT pick a different variant with a similar name (e.g. 'Diablo Ranch Steak Nacho Fries' is a DIFFERENT product from 'Large Nacho Fries'). The exact item may appear further down the page.",
+  "target_url": "https://www.tacobell.com/",
+  "created_at": "2026-09-18T20:09:38.980394+00:00",
+  "inputs": [
+    {
+      "name": "location",
+      "type": "string",
+      "description": "City and state used to find a nearby store",
+      "required": true,
+      "default": "San Jose, CA",
+      "sensitive": false
+    },
+    {
+      "name": "side_item",
+      "type": "string",
+      "description": "Exact menu name of the second item to add",
+      "required": true,
+      "default": "Large Nacho Fries",
+      "sensitive": false
+    },
+    {
+      "name": "substitute_item",
+      "type": "string",
+      "description": "Optional item to use if side_item is unavailable. If omitted, an unavailable side_item is reported as a business outcome instead of substituting.",
+      "required": false,
+      "default": null,
+      "sensitive": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "order_total",
+      "type": "string",
+      "description": "Subtotal shown in the bag/review screen, e.g. '$11.47'",
+      "extractor": "subtotal"
+    }
+  ],
+  "steps": [
+    {
+      "step_number": 1,
+      "action": "click",
+      "locator": {
+        "type": "text",
+        "value": "Start your order",
+        "button_text": null
+      },
+      "description": "Need to start the order process by clicking the 'Start your order' link to set a location.",
+      "input_value": null,
+      "fallback": null,
+      "on_missing": null
+    },
+    {
+      "step_number": 2,
+      "action": "type",
+      "locator": {
+        "type": "text",
+        "value": "Please enter City and State",
+        "button_text": null
+      },
+      "description": "Need to enter the target location to find nearby Taco Bell stores.",
+      "input_value": "{{location}}",
+      "fallback": null,
+      "on_missing": null
+    },
+    {
+      "step_number": 3,
+      "action": "click",
+      "locator": {
+        "type": "role",
+        "value": "button",
+        "button_text": null
+      },
+      "description": "Need to click the search button to find Taco Bell locations in San Jose, CA",
+      "input_value": null,
+      "fallback": null,
+      "on_missing": null
+    },
+    {
+      "step_number": 4,
+      "action": "wait",
+      "locator": null,
+      "description": "The page is currently searching for stores as indicated by the 'Finding Stores...' heading and loading indicator, so I need to wait for the results to appear.",
+      "input_value": null,
+      "fallback": null,
+      "on_missing": null
+    },
+    {
+      "step_number": 5,
+      "action": "click",
+      "locator": {
+        "type": "text",
+        "value": "Start Your Order",
+        "button_text": null
+      },
+      "description": "Need to click the first store's 'Start Your Order' button to proceed with ordering from the nearest location.",
+      "input_value": null,
+      "fallback": null,
+      "on_missing": null
+    },
+    {
+      "step_number": 6,
+      "action": "wait",
+      "locator": null,
+      "description": "The page is showing a modal dialog for choosing pickup method, which is still loading as indicated by the spinner image in the 'Choose pickup method' region.",
+      "input_value": null,
+      "fallback": null,
+      "on_missing": null
+    },
+    {
+      "step_number": 7,
+      "action": "click",
+      "locator": {
+        "type": "text",
+        "value": "Drive-Thru",
+        "button_text": null
+      },
+      "description": "The goal specifies to select Drive-Thru when available, and it is currently shown as an option on the pickup method dialog.",
+      "input_value": null,
+      "fallback": null,
+      "on_missing": null
+    },
+    {
+      "step_number": 8,
+      "action": "click",
+      "locator": {
+        "type": "text",
+        "value": "Finish",
+        "button_text": null
+      },
+      "description": "Need to confirm the store and pickup method selection by clicking 'Finish' to proceed to the menu.",
+      "input_value": null,
+      "fallback": null,
+      "on_missing": null
+    },
+    {
+      "step_number": 9,
+      "action": "click",
+      "locator": {
+        "type": "text",
+        "value": "Specialties",
+        "button_text": null
+      },
+      "description": "Need to navigate to the Specialties menu category to find the Black Bean Crunchwrap Supreme as specified in the goal.",
+      "input_value": null,
+      "fallback": null,
+      "on_missing": null
+    },
+    {
+      "step_number": 10,
+      "action": "click",
+      "locator": {
+        "type": "role",
+        "value": "Black Bean Crunchwrap Supreme\u00ae",
+        "button_text": "Customize"
+      },
+      "description": "Need to customize the Black Bean Crunchwrap Supreme with Fiesta Strips and Seasoned Rice as specified in the goal.",
+      "input_value": null,
+      "fallback": null,
+      "on_missing": null
+    },
+    {
+      "step_number": 11,
+      "action": "click",
+      "locator": {
+        "type": "text",
+        "value": "Fiesta Strips",
+        "button_text": null
+      },
+      "description": "Need to add Fiesta Strips to the Black Bean Crunchwrap Supreme customization as specified in the goal.",
+      "input_value": null,
+      "fallback": null,
+      "on_missing": null
+    },
+    {
+      "step_number": 12,
+      "action": "click",
+      "locator": {
+        "type": "text",
+        "value": "Seasoned Rice",
+        "button_text": null
+      },
+      "description": "Need to add Seasoned Rice to the Black Bean Crunchwrap Supreme customization as specified in the goal.",
+      "input_value": null,
+      "fallback": null,
+      "on_missing": null
+    },
+    {
+      "step_number": 13,
+      "action": "click",
+      "locator": {
+        "type": "text",
+        "value": "Add to Order",
+        "button_text": null
+      },
+      "description": "The Black Bean Crunchwrap Supreme is now customized with both Fiesta Strips and Seasoned Rice as shown by the pressed state of those buttons, so I need to add it to the order.",
+      "input_value": null,
+      "fallback": null,
+      "on_missing": null
+    },
+    {
+      "step_number": 14,
+      "action": "click",
+      "locator": {
+        "type": "text",
+        "value": "Close cart",
+        "button_text": null
+      },
+      "description": "Need to close the cart dialog to continue browsing the menu and add the Large Nacho Fries item.",
+      "input_value": null,
+      "fallback": null,
+      "on_missing": null
+    },
+    {
+      "step_number": 15,
+      "action": "click",
+      "locator": {
+        "type": "role",
+        "value": "{{side_item}}",
+        "button_text": "Add to Order"
+      },
+      "description": "Need to add the Large Nacho Fries to the order as specified in the goal.",
+      "input_value": null,
+      "fallback": {
+        "locator": {
+          "type": "role",
+          "value": "{{substitute_item}}",
+          "button_text": "Add to Order"
+        },
+        "condition": "side_item unavailable and caller supplied substitute_item",
+        "action": "click"
+      },
+      "on_missing": {
+        "outcome_code": "item_unavailable",
+        "page_anchor": {
+          "type": "text",
+          "value": "Add to Order",
+          "button_text": null
+        },
+        "message": "'{{side_item}}' is not available on this store's menu."
+      }
+    },
+    {
+      "step_number": 16,
+      "action": "click",
+      "locator": {
+        "type": "text",
+        "value": "Close cart",
+        "button_text": null
+      },
+      "description": "Need to close the cart dialog to see the checkout/order review screen as specified in the goal.",
+      "input_value": null,
+      "fallback": null,
+      "on_missing": null
+    },
+    {
+      "step_number": 17,
+      "action": "click",
+      "locator": {
+        "type": "text",
+        "value": "Your Order",
+        "button_text": null
+      },
+      "description": "I have successfully added both items to the order (Black Bean Crunchwrap Supreme with customizations and Large Nacho Fries), now I need to view the checkout/order review screen by clicking on the cart.",
+      "input_value": null,
+      "fallback": null,
+      "on_missing": null
+    }
+  ],
+  "checkpoint": {
+    "locator": {
+      "type": "text",
+      "value": "My Bag",
+      "button_text": null
+    },
+    "description": "The bag / order review panel is open",
+    "must_contain": [
+      "Black Bean Crunchwrap Supreme",
+      "{{side_item}}"
+    ]
+  },
+  "schema_version": "2.0",
+  "status": "approved",
+  "app": {
+    "vendor": "Taco Bell",
+    "product": "tacobell.com online ordering",
+    "surface": "web"
+  },
+  "outcome_signatures": [
+    {
+      "outcome_code": "item_sold_out",
+      "locator": {
+        "type": "text",
+        "value": "Sold Out",
+        "button_text": null
+      },
+      "message": "The requested item is sold out at this store."
+    }
+  ],
+  "provenance": {
+    "discovered_by": "llm:claude-sonnet-4-5",
+    "discovery_run_id": "v1_2026-09-18T20:09:38Z",
+    "reviewed_by": "Shruthi Tuplur",
+    "notes": "Recorded by a real LLM discovery run on 2026-09-18 (schema 1.0), replayed successfully several times, then migrated to schema 2.0 by migrate_v1_artifact.py. Steps and locators unchanged."
+  }
+}

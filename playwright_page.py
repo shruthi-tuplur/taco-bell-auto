@@ -1,21 +1,82 @@
+"""
+Surface adapter for web apps, built on Playwright.
+
+This is the "how we perceive and act on a surface" side of the seam.
+Discovery and replay only ever call the small interface below
+(navigate / find / click / type_text / press_enter / wait / settle /
+get_accessibility_snapshot / screenshot / current_url / extract /
+start_human_capture / stop_human_capture). A legacy-web or desktop adapter
+would implement the same methods (see REPORT.md, "Heterogeneity").
+"""
+
+import time
 from playwright.sync_api import sync_playwright
 import re as _re
 
+# Injected into every page. While a human is in control it reports what they
+# click and which fields they edit. It NEVER reports typed values.
+_HUMAN_CAPTURE_JS = """
+(() => {
+  if (window.__humanCaptureInstalled) return;
+  window.__humanCaptureInstalled = true;
+  const label = (el) => {
+    const t = el.closest('button, a, [role], input, select, textarea, label') || el;
+    return (t.getAttribute('aria-label') || t.getAttribute('placeholder') ||
+            (t.innerText || '').trim().slice(0, 60) || t.tagName).replace(/\\s+/g, ' ');
+  };
+  document.addEventListener('click', (e) => {
+    try { window.__humanAction({kind: 'click', target: label(e.target), url: location.href}); } catch (_) {}
+  }, true);
+  document.addEventListener('change', (e) => {
+    try { window.__humanAction({kind: 'edit_field', target: label(e.target), url: location.href}); } catch (_) {}
+  }, true);
+})();
+"""
+
 
 class PlaywrightPage:
-    def __init__(self, headless=False):
+    def __init__(self, headless=False, geolocation=None):
         self.playwright = sync_playwright().start()
+        # Launch exactly ONE browser. (v1 launched a second one here that
+        # was never used and never closed.)
         self.browser = self.playwright.chromium.launch(headless=headless)
-        context = self.browser.new_context(
-            permissions=["geolocation"],
-            geolocation={"latitude": 37.3382, "longitude": -121.8863},
-        )
-        self.page = context.new_page()
+        geo = geolocation or {"latitude": 37.3382, "longitude": -121.8863}
+        self.context = self.browser.new_context(permissions=["geolocation"], geolocation=geo)
+        self._capturing = False
+        self._human_actions = []
+        self.context.expose_binding("__humanAction", self._on_human_action)
+        self.context.add_init_script(_HUMAN_CAPTURE_JS)
+        self.page = self.context.new_page()
         self.actions_log = []
+        self.recovered_events = []      # interstitials dismissed, retries that saved a step, etc.
         self.last_typed_field = None
-        self.browser = self.playwright.chromium.launch(
-            headless=headless
-        )
+
+    # ------------------------------------------------------------------
+    # human action capture (used during escalation handoff)
+    # ------------------------------------------------------------------
+    def _on_human_action(self, source, payload):
+        if self._capturing:
+            payload = dict(payload)
+            payload["at"] = time.strftime("%H:%M:%S")
+            self._human_actions.append(payload)
+
+    def start_human_capture(self):
+        self._human_actions = []
+        self._capturing = True
+        try:
+            self.page.evaluate(_HUMAN_CAPTURE_JS)   # current document too, not just future ones
+        except Exception:
+            pass
+
+    def stop_human_capture(self):
+        self._capturing = False
+        return list(self._human_actions)
+
+    def current_url(self):
+        return self.page.url
+
+    def last_action(self):
+        return self.actions_log[-1] if self.actions_log else ""
 
     def _pick_best_candidate(self, candidate_names, target_value):
         """
@@ -90,26 +151,42 @@ class PlaywrightPage:
         self.page.goto(url)
         self.page.wait_for_load_state("networkidle")
 
+        # Known interstitial: cookie consent banner. Dismissing it is a
+        # "recoverable condition" and is reported as such in the result.
         try:
             agree_button = self.page.get_by_role("button", name="AGREE", exact=False)
             agree_button.first.click(timeout=5000)
             self.actions_log.append("CLICKED cookie banner button: AGREE")
+            self.recovered_events.append({"kind": "dismissed_interstitial", "detail": "cookie consent banner"})
             self.page.wait_for_timeout(1000)
         except Exception as e:
             self.actions_log.append(f"Cookie banner click attempt failed or not found: {e}")
 
         self.actions_log.append(f"NAVIGATE -> {url}")
 
-    def find(self, locator):
-        value = locator["value"]
-        try:
-            element = self.page.get_by_text(value, exact=False)
-            is_visible = element.first.is_visible(timeout=5000)
-            self.actions_log.append(f"FIND '{value}' -> {'found' if is_visible else 'NOT FOUND'}")
-            return is_visible
-        except Exception:
-            self.actions_log.append(f"FIND '{value}' -> NOT FOUND")
-            return False
+    def find(self, locator, timeout_ms=5000):
+        """True if an element with this text becomes visible within timeout.
+
+        v1 used `is_visible(timeout=...)`, but Playwright ignores that
+        timeout (is_visible never waits), so every find() was an instant
+        single check. That was the real cause of the post-handoff
+        checkpoint flake. This version actually polls.
+        """
+        value = locator["value"] if isinstance(locator, dict) else locator.value
+        deadline = time.time() + timeout_ms / 1000
+        while True:
+            try:
+                matches = self.page.get_by_text(value, exact=False)
+                for i in range(min(matches.count(), 25)):
+                    if matches.nth(i).is_visible():
+                        self.actions_log.append(f"FIND '{value}' -> found")
+                        return True
+            except Exception:
+                pass
+            if time.time() >= deadline:
+                self.actions_log.append(f"FIND '{value}' -> NOT FOUND")
+                return False
+            self.page.wait_for_timeout(250)
 
     def click(self, locator):
         raw_value = locator["value"]
@@ -135,8 +212,12 @@ class PlaywrightPage:
                 retries += 1
 
             if match is not None:
+                if retries:
+                    self.recovered_events.append({"kind": "retried_slow_render",
+                                                  "detail": f"'{raw_value}' appeared after {retries} retries"})
                 match.click()
                 self._settle()
+                self.last_typed_field = None
                 self.actions_log.append(f"CLICK (scoped button_text match) '{raw_value}' -> '{button_text}'")
                 return True
 
@@ -150,16 +231,24 @@ class PlaywrightPage:
         # accessibility tree the LLM reasons from) -- this is more reliable
         # than visible text for buttons whose rendered text differs from
         # their full aria-label (e.g. "Add Ons, group of 11 options, ...").
-        for role in ("button", "link"):
-            try:
-                role_match = self.page.get_by_role(role, name=raw_value, exact=False).first
-                if role_match.is_visible(timeout=2000):
-                    role_match.click(force=True, timeout=8000)
-                    self._settle()
-                    self.actions_log.append(f"CLICK (accessible name, {role}) '{raw_value}'")
-                    return
-            except Exception:
-                continue
+        # Exact name first, THEN substring. (Substring-only matching picked
+        # "Start Your Order" when the step asked for "Your Order", because
+        # it came first in the DOM. Found by the local smoke test.)
+        for exact in (True, False):
+            for role in ("button", "link"):
+                try:
+                    matches = self.page.get_by_role(role, name=raw_value, exact=exact)
+                    for i in range(min(matches.count(), 10)):
+                        role_match = matches.nth(i)
+                        if role_match.is_visible():
+                            role_match.click(force=True, timeout=8000)
+                            self._settle()
+                            self.last_typed_field = None
+                            kind = "exact accessible name" if exact else "accessible name contains"
+                            self.actions_log.append(f"CLICK ({kind}, {role}) '{raw_value}'")
+                            return
+                except Exception:
+                    continue
 
         # Attempt 2: manual scan of visible TEXT (handles quote/whitespace
         # mismatches, and cases where accessible name matching misses).
@@ -188,17 +277,22 @@ class PlaywrightPage:
         if match is not None:
             match.click(force=True, timeout=8000)
             self._settle()
+            self.last_typed_field = None
             self.actions_log.append(f"CLICK (text) '{raw_value}'")
             return
 
-        # Attempt 3: positional fallback near the last typed field --
-        # only meaningful right after typing into something (e.g. an
-        # unlabeled icon button next to a just-filled search box).
+        # Attempt 3: positional fallback near the last typed field. Only
+        # allowed on the click IMMEDIATELY after typing (last_typed_field is
+        # cleared by every successful click), e.g. an unlabeled icon button
+        # next to a just-filled search box. Without that rule this path
+        # silently clicked the wrong button later in a flow.
         if getattr(self, "last_typed_field", None) is not None:
             nearby_button = self.last_typed_field.locator("xpath=following::button[1]")
             nearby_button.click(force=True, timeout=8000)
             self._settle()
-            self.actions_log.append(f"CLICK (positional fallback near last field) for intended '{raw_value}'")
+            self.last_typed_field = None
+            self.actions_log.append(f"CLICK (LOW CONFIDENCE positional fallback next to last typed field) "
+                                    f"for intended '{raw_value}'")
             return
 
         raise Exception(f"No visible button/link match found for '{raw_value}'")
@@ -209,6 +303,38 @@ class PlaywrightPage:
         except Exception:
             pass
         self.page.wait_for_timeout(300)
+
+    def settle(self, max_seconds=8):
+        """Condition-based wait used for recorded 'wait' steps: wait until
+        the network goes idle AND common loading indicators disappear,
+        capped at max_seconds. Replaces v1's fixed 2 second sleep."""
+        deadline = time.time() + max_seconds
+        try:
+            self.page.wait_for_load_state("networkidle", timeout=max_seconds * 1000)
+        except Exception:
+            pass
+        loading = ("Finding Stores", "Loading")
+        while time.time() < deadline:
+            busy = False
+            for word in loading:
+                try:
+                    if self.page.get_by_text(word, exact=False).first.is_visible():
+                        busy = True
+                except Exception:
+                    pass
+            if not busy:
+                break
+            self.page.wait_for_timeout(300)
+        self.page.wait_for_timeout(500)
+        self.actions_log.append("SETTLE (network idle, no loading indicator)")
+
+    def extract(self, extractor):
+        """Named output extractors an artifact can reference."""
+        if extractor == "subtotal":
+            return self.get_order_total()
+        if extractor == "current_url":
+            return self.page.url
+        raise ValueError(f"Unknown extractor '{extractor}'")
 
     def get_order_total(self):
         try:
@@ -272,5 +398,9 @@ class PlaywrightPage:
     def close(self, pause_before_close=False):
         if pause_before_close:
             input("Press ENTER in the terminal to close the browser...")
+        try:
+            self.context.close()
+        except Exception:
+            pass
         self.browser.close()
         self.playwright.stop()

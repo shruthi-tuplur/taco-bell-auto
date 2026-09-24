@@ -1,0 +1,28 @@
+{
+  "_comment": "Guardrail policy. Enforced by policy.py for BOTH discovery and replay. In production this would be per tenant and per app.",
+  "allowed_domains": ["tacobell.com"],
+  "allowed_actions": ["click", "type", "navigate", "wait", "press_enter"],
+  "blocked_labels": [
+    "place order",
+    "submit order",
+    "complete purchase",
+    "complete order",
+    "pay",
+    "pay now",
+    "submit payment",
+    "add payment",
+    "add card",
+    "confirm and pay",
+    "buy now"
+  ],
+  "approval_labels": [
+    "remove",
+    "delete",
+    "clear cart",
+    "empty cart",
+    "sign in",
+    "log in",
+    "create account",
+    "sign out"
+  ]
+}

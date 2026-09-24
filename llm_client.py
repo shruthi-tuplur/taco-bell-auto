@@ -8,6 +8,12 @@ import re
 import json
 from anthropic import Anthropic
 
+try:  # optional: read ANTHROPIC_API_KEY from a local .env file (never committed)
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 client = Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 
 SYSTEM_PROMPT = """You are controlling a web browser to complete an online food order.
@@ -21,7 +27,7 @@ RULES:
 - If an item you need appears unavailable, look for a reasonable substitute before giving up.
 - Never attempt to enter payment information or complete a real purchase.
 - Only take ONE action per response. You will be shown the updated page after each action.
-- The target location for this order is: San Jose, CA. Use this whenever a location/city/store search is needed.
+- When a location/city/store search is needed, type the location given in the GOAL.
 - Icon-only buttons (like a search/magnifying-glass icon) usually have no visible text, but DO have an accessible name in the page tree (e.g. "Search"). For these, use {"action": "click", "target": {"type": "role", "value": "<accessible name from the tree>"}}.
 - After clicking to submit a location search, a list of matching store results usually appears. Click the first one.
 - ALWAYS use the SHORTEST distinctive word or phrase as the locator value, never a full sentence or paragraph — e.g. use "Drive-Thru" not "Drive-Thru. Open til...", use "Now" not "Now. Wait time: 5-8 mins...". If a button's visible text is long, pick out just the first 1-3 words that make it unique.

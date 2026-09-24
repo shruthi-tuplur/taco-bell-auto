@@ -17,4 +17,5 @@ test-results/
 playwright-report/
 
 # our debug artifacts we don't need in git
-failure_tree.txt
+failure_tree.txt.pytest_cache/
+__MACOSX/

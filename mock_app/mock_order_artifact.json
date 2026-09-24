@@ -1,0 +1,172 @@
+{
+  "artifact_id": "mock_app_order",
+  "version": "1.0.0",
+  "schema_version": "2.0",
+  "status": "approved",
+  "goal_description": "Offline stand-in for the Taco Bell flow: add a customized main item plus {{side_item}} and open the bag.",
+  "target_url": "http://localhost:8765/index.html",
+  "created_at": "2026-09-24T00:00:00+00:00",
+  "app": {
+    "vendor": "local mock",
+    "product": "mock_app/index.html",
+    "surface": "web"
+  },
+  "inputs": [
+    {
+      "name": "location",
+      "type": "string",
+      "description": "City and state",
+      "required": true,
+      "default": "San Jose, CA",
+      "sensitive": false
+    },
+    {
+      "name": "side_item",
+      "type": "string",
+      "description": "Second item",
+      "required": true,
+      "default": "Large Nacho Fries",
+      "sensitive": false
+    },
+    {
+      "name": "substitute_item",
+      "type": "string",
+      "description": "Optional substitute",
+      "required": false,
+      "default": null,
+      "sensitive": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "order_total",
+      "type": "string",
+      "description": "Subtotal",
+      "extractor": "subtotal"
+    }
+  ],
+  "steps": [
+    {
+      "step_number": 1,
+      "action": "type",
+      "locator": {
+        "type": "text",
+        "value": "Please enter City and State",
+        "button_text": null
+      },
+      "description": "Enter the store search location",
+      "input_value": "{{location}}",
+      "fallback": null,
+      "on_missing": null
+    },
+    {
+      "step_number": 2,
+      "action": "click",
+      "locator": {
+        "type": "role",
+        "value": "Search",
+        "button_text": null
+      },
+      "description": "Run the store search",
+      "input_value": null,
+      "fallback": null,
+      "on_missing": null
+    },
+    {
+      "step_number": 3,
+      "action": "wait",
+      "locator": null,
+      "description": "Store results load asynchronously",
+      "input_value": null,
+      "fallback": null,
+      "on_missing": null
+    },
+    {
+      "step_number": 4,
+      "action": "click",
+      "locator": {
+        "type": "text",
+        "value": "Start Your Order",
+        "button_text": null
+      },
+      "description": "Pick the first store",
+      "input_value": null,
+      "fallback": null,
+      "on_missing": null
+    },
+    {
+      "step_number": 5,
+      "action": "click",
+      "locator": {
+        "type": "role",
+        "value": "Black Bean Crunchwrap Supreme",
+        "button_text": "Add to Order"
+      },
+      "description": "Add the main item",
+      "input_value": null,
+      "fallback": null,
+      "on_missing": null
+    },
+    {
+      "step_number": 6,
+      "action": "click",
+      "locator": {
+        "type": "role",
+        "value": "{{side_item}}",
+        "button_text": "Add to Order"
+      },
+      "description": "Add the side item",
+      "input_value": null,
+      "fallback": {
+        "locator": {
+          "type": "role",
+          "value": "{{substitute_item}}",
+          "button_text": "Add to Order"
+        },
+        "condition": "side_item unavailable and caller supplied substitute_item",
+        "action": "click"
+      },
+      "on_missing": {
+        "outcome_code": "item_unavailable",
+        "page_anchor": {
+          "type": "text",
+          "value": "Add to Order",
+          "button_text": null
+        },
+        "message": "'{{side_item}}' is not available on this store's menu."
+      }
+    },
+    {
+      "step_number": 7,
+      "action": "click",
+      "locator": {
+        "type": "text",
+        "value": "Your Order",
+        "button_text": null
+      },
+      "description": "Open the bag",
+      "input_value": null,
+      "fallback": null,
+      "on_missing": null
+    }
+  ],
+  "checkpoint": {
+    "locator": {
+      "type": "text",
+      "value": "My Bag",
+      "button_text": null
+    },
+    "description": "Bag is open",
+    "must_contain": [
+      "Black Bean Crunchwrap Supreme",
+      "{{side_item}}"
+    ]
+  },
+  "outcome_signatures": [],
+  "provenance": {
+    "discovered_by": "hand-written",
+    "discovery_run_id": "n/a",
+    "reviewed_by": "Shruthi Tuplur",
+    "notes": "Offline test fixture that mirrors the real artifact's structure."
+  }
+}

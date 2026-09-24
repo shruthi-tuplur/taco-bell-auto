@@ -1,0 +1,14 @@
+<html><head><meta charset="utf-8"></head><body>
+<button onclick="this.remove()">AGREE</button>
+<input placeholder="Please enter City and State" id="loc">
+<button aria-label="Search" onclick="setTimeout(()=>{document.getElementById('stores').style.display='block'},800)">🔍</button>
+<div id="stores" style="display:none"><button onclick="document.getElementById('menu').style.display='block'">Start Your Order</button></div>
+<div id="menu" style="display:none">
+ <h4>Black Bean Crunchwrap Supreme®</h4><button aria-label="Black Bean Crunchwrap Supreme®" onclick="add('Black Bean Crunchwrap Supreme')">Add to Order</button>
+ <h4>Large Nacho Fries</h4><button onclick="add('Large Nacho Fries')">Add to Order</button>
+ <h4>Cheesy Roll Up</h4><button aria-label="Cheesy Roll Up" onclick="add('Cheesy Roll Up')">Add to Order</button>
+ <button onclick="document.getElementById('bag').style.display='block'">Your Order</button>
+</div>
+<div id="bag" style="display:none"><h2>My Bag</h2><ul id="items"></ul><p>Subtotal $11.47</p></div>
+<script>function add(n){const li=document.createElement('li');li.innerText=n;document.getElementById('items').appendChild(li)}</script>
+</body></html>
