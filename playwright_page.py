@@ -26,10 +26,10 @@ _HUMAN_CAPTURE_JS = """
   };
   // pointerdown (not click) so the event is sent BEFORE a link starts navigating away
   document.addEventListener('pointerdown', (e) => {
-    try { window.__humanAction({kind: 'click', target: label(e.target), url: location.href}); } catch (_) {}
+    try { window.__humanAction({kind: 'click', target: label(e.target), url: location.href, at: new Date().toISOString()}); } catch (_) {}
   }, true);
   document.addEventListener('change', (e) => {
-    try { window.__humanAction({kind: 'edit_field', target: label(e.target), url: location.href}); } catch (_) {}
+    try { window.__humanAction({kind: 'edit_field', target: label(e.target), url: location.href, at: new Date().toISOString()}); } catch (_) {}
   }, true);
 })();
 """
@@ -61,7 +61,7 @@ class PlaywrightPage:
     def _on_human_action(self, source, payload):
         if self._capturing:
             payload = dict(payload)
-            payload["at"] = time.strftime("%H:%M:%S")
+            payload.setdefault("at", time.strftime("%H:%M:%S"))
             self._human_actions.append(payload)
 
     def _on_navigated(self, frame):
@@ -77,6 +77,14 @@ class PlaywrightPage:
             pass
 
     def stop_human_capture(self):
+        # Playwright's sync API only dispatches browser events while a
+        # Playwright call is running. While the terminal was blocked on
+        # input(), the human's clicks/navigations queued up undelivered, so
+        # pump the event loop BEFORE turning capture off.
+        try:
+            self.page.wait_for_timeout(500)
+        except Exception:
+            pass
         self._capturing = False
         return list(self._human_actions)
 

@@ -91,6 +91,23 @@ class BrowserSmoke(unittest.TestCase):
         r = self._run({}, inject=4)
         self.assertEqual((r.status, r.failed_at_step), ("failure", 4), r.message)
 
+    def test_human_clicks_are_captured_while_python_is_blocked(self):
+        # Regression: in the live run the operator clicks while Python sits in
+        # input(), so no Playwright call is pumping events. Simulate exactly that.
+        import time as _t
+        page = PlaywrightPage(headless=True)
+        try:
+            page.navigate(f"http://localhost:{PORT}/index.html")
+            page.start_human_capture()
+            page.page.evaluate("setTimeout(() => { const b = [...document.querySelectorAll('button')]"
+                               ".find(x => x.innerText.trim() === 'AGREE' || x.getAttribute('aria-label') === 'Search');"
+                               " b.dispatchEvent(new PointerEvent('pointerdown', {bubbles: true})); }, 200)")
+            _t.sleep(1.5)                      # Python blocked, like input()
+            actions = page.stop_human_capture()
+        finally:
+            page.close()
+        self.assertTrue(any(a["kind"] == "click" for a in actions), actions)
+
     def test_human_handoff_resumes_same_session(self):
         r = self._run({}, inject=4, human=True)
         self.assertEqual((r.status, r.outcome_code), ("success", "completed_with_human_intervention"), r.message)

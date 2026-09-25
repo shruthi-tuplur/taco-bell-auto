@@ -49,7 +49,7 @@ cp .env.example .env                 # then paste your key into .env
 python -m pytest -q
 ```
 
-26 tests, about 25 seconds, no network, no API key:
+27 tests, about 30 seconds, no network, no API key:
 - `tests/test_replay.py` drives the real engine and the real saved artifact against a scripted fake surface: success, input substitution, item unavailable, substitution, broken page vs business outcome, injected failure, human resume, human "done" that fails re-verification, silent missing item, blocked irreversible action, denied risky action, off-allowlist navigation, redaction, draft refusal, input and artifact validation.
 - `tests/test_browser_smoke.py` runs the real Playwright adapter, headless, against `mock_app/index.html`: success, item unavailable, substitution, hard failure, and a human handoff in the same live session.
 
