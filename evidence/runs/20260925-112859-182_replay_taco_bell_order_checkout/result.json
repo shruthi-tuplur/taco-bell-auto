@@ -1,0 +1,23 @@
+{
+  "status": "success",
+  "outcome_code": "completed",
+  "message": "Checkpoint verified and all expected items are present.",
+  "outputs": {
+    "order_total": "$11.47"
+  },
+  "failed_at_step": null,
+  "expected": null,
+  "observed": null,
+  "recovered": [
+    {
+      "kind": "dismissed_interstitial",
+      "detail": "cookie consent banner"
+    }
+  ],
+  "substitutions": [],
+  "human_intervened": false,
+  "interventions": [],
+  "artifact": "taco_bell_order_checkout@2.0.0",
+  "run_id": "[REDACTED:number]182_replay_taco_bell_order_checkout",
+  "evidence_dir": "/Users/shruchainz/Downloads/taco_bell_automation/evidence/runs/[REDACTED:number]182_replay_taco_bell_order_checkout"
+}

@@ -1,0 +1,174 @@
+- banner:
+  - link "Taco Bell Home":
+    - /url: /
+  - navigation:
+    - link "Menu":
+      - /url: /food?store=028835
+    - link "Delivery":
+      - /url: /delivery
+    - link "Rewards":
+      - /url: /rewards
+    - link "Gift Cards":
+      - /url: /gift-cards
+    - link "Purpose":
+      - /url: /purpose
+    - img
+    - link "People":
+      - /url: /purpose/people
+    - link "Planet":
+      - /url: /purpose/planet
+    - link "Food":
+      - /url: /purpose/food
+  - navigation "Store location and pickup information":
+    - text: Check in at drive-thru speaker 2600 Homestead Rd, Santa Clara, CA 95051
+    - link "Change store location":
+      - /url: /locations
+      - text: Change
+  - img
+  - link "Your account":
+    - /url: /login/yum
+    - img "Your account"
+  - text: "|"
+  - link "Taco Bell Rewards":
+    - /url: "#"
+    - img "Taco Bell Rewards"
+  - link "Your Order":
+    - /url: /order/cart
+    - img "Your Order"
+- main:
+  - heading "Taco Bell® Menu" [level=1]
+  - article "Discover our most popular picks.":
+    - img "Best Sellers"
+    - text: Best Sellers Discover our most popular picks.
+    - link "Navigate to Best Sellers category":
+      - /url: /food/best-sellers?store=028835
+  - article "Check out the latest menu items that recently dropped.":
+    - img "Featured"
+    - text: Featured Check out the latest menu items that recently dropped.
+    - link "Navigate to Featured category":
+      - /url: /food/featured?store=028835
+  - article "The Build Your Own Luxe Cravings Box and more, available only online.":
+    - img "Online Exclusives"
+    - text: Online Exclusives The Build Your Own Luxe Cravings Box and more, available only online.
+    - link "Navigate to Online Exclusives category":
+      - /url: /food/online-exclusives?store=028835
+  - article "The new Luxe Value Menu brings 10 favorites, each $3 or less.":
+    - img "Luxe Value Menu"
+    - text: Luxe Value Menu The new Luxe Value Menu brings 10 favorites, each $3 or less.
+    - link "Navigate to Luxe Value Menu category":
+      - /url: /food/luxe-value-menu?store=028835
+  - article "Enjoy our marinated, slow-roasted chicken.":
+    - img "Cantina Chicken Menu"
+    - text: Cantina Chicken Menu Enjoy our marinated, slow-roasted chicken.
+    - link "Navigate to Cantina Chicken Menu category":
+      - /url: /food/cantina-chicken-menu?store=028835
+  - article "Get your favorite menu items plus a drink with one of our combos or Luxe Boxes.":
+    - img "Boxes & Combos"
+    - text: Boxes & Combos Get your favorite menu items plus a drink with one of our combos or Luxe Boxes.
+    - link "Navigate to Boxes & Combos category":
+      - /url: /food/boxes-and-combos?store=028835
+  - article "Go soft or keep it crunchy. Or both.":
+    - img "Tacos"
+    - text: Tacos Go soft or keep it crunchy. Or both.
+    - link "Navigate to Tacos category":
+      - /url: /food/tacos?store=028835
+  - article "Get wrapped up in one of our classic burritos.":
+    - img "Burritos"
+    - text: Burritos Get wrapped up in one of our classic burritos.
+    - link "Navigate to Burritos category":
+      - /url: /food/burritos?store=028835
+  - article "The Taco Bell menu items you won’t find anywhere else.":
+    - img "Specialties"
+    - text: Specialties The Taco Bell menu items you won’t find anywhere else.
+    - link "Navigate to Specialties category":
+      - /url: /food/specialties?store=028835
+  - article "Complete your meal with a side item, grab a dessert or add some sauces.":
+    - img "Snacks & Sweets"
+    - text: Snacks & Sweets Complete your meal with a side item, grab a dessert or add some sauces.
+    - link "Navigate to Snacks & Sweets category":
+      - /url: /food/snacks-sweets?store=028835
+  - article "Perfect your cheese-pull with one of our quesadillas.":
+    - img "Quesadillas"
+    - text: Quesadillas Perfect your cheese-pull with one of our quesadillas.
+    - link "Navigate to Quesadillas category":
+      - /url: /food/quesadillas?store=028835
+  - article "Cool off with a soda or Freeze and raise a glass to Happier Hour every day from 2-5 p.m.":
+    - img "Drinks"
+    - text: Drinks Cool off with a soda or Freeze and raise a glass to Happier Hour every day from 2-5 p.m.
+    - link "Navigate to Drinks category":
+      - /url: /food/drinks?store=028835
+  - article "Tortilla chips, Nacho Cheese Sauce and all your favorite toppings. Dip in.":
+    - img "Nachos"
+    - text: Nachos Tortilla chips, Nacho Cheese Sauce and all your favorite toppings. Dip in.
+    - link "Navigate to Nachos category":
+      - /url: /food/nachos?store=028835
+  - article "Grab a Party Pack for you and your crew.":
+    - img "Groups"
+    - text: Groups Grab a Party Pack for you and your crew.
+    - link "Navigate to Groups category":
+      - /url: /food/party-packs?store=028835
+  - article "All your favorite menu items made vegetarian.":
+    - img "Veggie Cravings"
+    - text: Veggie Cravings All your favorite menu items made vegetarian.
+    - link "Navigate to Veggie Cravings category":
+      - /url: /food/vegetarian?store=028835
+  - article "Grab something light and try the Cantina Chicken Bowl.":
+    - img "Bowls"
+    - text: Bowls Grab something light and try the Cantina Chicken Bowl.
+    - link "Navigate to Bowls category":
+      - /url: /food/bowls?store=028835
+  - article "Rise and dine every day until 10:45 a.m.":
+    - img "Breakfast"
+    - text: Breakfast Rise and dine every day until 10:45 a.m.
+    - link "Navigate to Breakfast category":
+      - /url: /food/breakfast?store=028835
+  - link "View Nutrition Info":
+    - /url: /nutrition/info
+  - heading "Find Tacos Near You Today in Santa Clara, CA" [level=2]
+  - heading "Order your favorite Taco Bell® menu items online or visit us at the Taco Bell location nearest you at 2600 Homestead Rd, Santa Clara, CA" [level=3]
+  - paragraph:
+    - text: The Taco Bell menu in Santa Clara has all of your favorite Mexican inspired menu items. From
+    - link "classic tacos":
+      - /url: /food/tacos
+    - text: and
+    - link "burritos":
+      - /url: /food/burritos
+    - text: to our epic
+    - link "specialties":
+      - /url: /food/specialties
+    - text: and
+    - link "combos":
+      - /url: /food/deals-and-combos
+    - text: ", there’s something for everyone on the Taco Bell menu. Find something new on the Taco Bell menu today!"
+  - paragraph:
+    - text: With breakfast options at select locations, to late night, the Taco Bell menu in Santa Clara, CA, serves made-to-order and customizable tacos,
+    - link "burritos":
+      - /url: /food/burritos
+    - text: ","
+    - link "quesadillas":
+      - /url: /food/quesadillas
+    - text: ","
+    - link "nachos":
+      - /url: /food/nachos
+    - text: ","
+    - link "vegetarian":
+      - /url: /food/vegetarian
+    - text: options,
+    - link "fountain drinks":
+      - /url: /food/drinks
+    - text: and
+    - link "desserts":
+      - /url: /food/sides-sweets
+    - text: . Our specialties menu features all time favorites like the
+    - link "Chalupa Supreme":
+      - /url: /food/specialties/chalupa-supreme
+    - text: ", and the"
+    - link "Crunchwrap Supreme":
+      - /url: /food/specialties/crunchwrap-supreme
+    - text: . Only have a few dollars to spare? Check out the
+    - link "Cravings Value Menu":
+      - /url: /food/cravings-value-menu
+    - text: and enjoy the
+    - link "Cheesy Roll Up":
+      - /url: /food/cravings-value-menu/cheesy-roll-up
+    - text: ", or a Cheesy Bean and Rice Burrito. With the completely customizable Taco Bell menu in Santa Clara, CA, you can reinvent all of your favorite menu items with a variety of sauces and add-ons. Order from the Taco Bell menu at 2600 Homestead Rd, Santa Clara, CA or order online and skip our line today!"

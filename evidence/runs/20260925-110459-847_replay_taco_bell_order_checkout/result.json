@@ -1,0 +1,30 @@
+{
+  "status": "business_outcome",
+  "outcome_code": "substituted",
+  "message": "Completed, but 'McNuggets' was unavailable and 'Cheesy Roll Up' was used instead.",
+  "outputs": {
+    "order_total": "$9.17"
+  },
+  "failed_at_step": null,
+  "expected": null,
+  "observed": null,
+  "recovered": [
+    {
+      "kind": "dismissed_interstitial",
+      "detail": "cookie consent banner"
+    }
+  ],
+  "substitutions": [
+    {
+      "step": 15,
+      "requested": "McNuggets",
+      "used": "Cheesy Roll Up",
+      "reason": "side_item unavailable and caller supplied substitute_item"
+    }
+  ],
+  "human_intervened": false,
+  "interventions": [],
+  "artifact": "taco_bell_order_checkout@2.0.0",
+  "run_id": "[REDACTED:number]847_replay_taco_bell_order_checkout",
+  "evidence_dir": "/Users/shruchainz/Downloads/taco_bell_automation/evidence/runs/[REDACTED:number]847_replay_taco_bell_order_checkout"
+}

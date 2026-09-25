@@ -1,0 +1,21 @@
+{
+  "status": "business_outcome",
+  "outcome_code": "item_unavailable",
+  "message": "'McNuggets' is not available on this store's menu.",
+  "outputs": {},
+  "failed_at_step": 15,
+  "expected": "McNuggets Add to Order",
+  "observed": "page is healthy (anchor 'Add to Order' visible) but 'McNuggets' is not on it",
+  "recovered": [
+    {
+      "kind": "dismissed_interstitial",
+      "detail": "cookie consent banner"
+    }
+  ],
+  "substitutions": [],
+  "human_intervened": false,
+  "interventions": [],
+  "artifact": "taco_bell_order_checkout@2.0.0",
+  "run_id": "[REDACTED:number]788_replay_taco_bell_order_checkout",
+  "evidence_dir": "/Users/shruchainz/Downloads/taco_bell_automation/evidence/runs/[REDACTED:number]788_replay_taco_bell_order_checkout"
+}
