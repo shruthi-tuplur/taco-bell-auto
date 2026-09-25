@@ -49,7 +49,7 @@ cp .env.example .env                 # then paste your key into .env
 python -m pytest -q
 ```
 
-25 tests, about 25 seconds, no network, no API key:
+26 tests, about 25 seconds, no network, no API key:
 - `tests/test_replay.py` drives the real engine and the real saved artifact against a scripted fake surface: success, input substitution, item unavailable, substitution, broken page vs business outcome, injected failure, human resume, human "done" that fails re-verification, silent missing item, blocked irreversible action, denied risky action, off-allowlist navigation, redaction, draft refusal, input and artifact validation.
 - `tests/test_browser_smoke.py` runs the real Playwright adapter, headless, against `mock_app/index.html`: success, item unavailable, substitution, hard failure, and a human handoff in the same live session.
 
@@ -93,7 +93,11 @@ Expected: `STATUS: business_outcome`, `OUTCOME CODE: substituted`, with the orde
 ```bash
 python replay.py --inject-failure 9
 ```
-Step 9 (the "Specialties" tab) is deliberately broken. The engine escalates: the terminal shows the intervention request, and control passes to you in the same browser window. Click **Specialties** in the browser, then press **Enter** in the terminal and type a short note. Automation takes control back, continues from step 10, and verifies the checkpoint. Expected: `STATUS: success`, `OUTCOME CODE: completed_with_human_intervention`, and a resolved record in `escalations/`.
+Step 9 (the "Specialties" tab) is deliberately broken. The engine escalates and the terminal shows a box with `>>> YOUR JOB: in the browser, click 'Specialties'`. Control is now yours, in the same browser window:
+1. Click **SPECIALTIES** in the site's menu bar.
+2. Come back to the terminal and press **Enter** (optionally type a short note, then Enter again).
+
+Automation takes control back, continues from step 10, and verifies the checkpoint. Expected: `STATUS: success`, `OUTCOME CODE: completed_with_human_intervention`, and a resolved record in `escalations/` that includes what you clicked.
 
 Add `--no-escalate` to see the same failure reported as a hard failure without a human.
 

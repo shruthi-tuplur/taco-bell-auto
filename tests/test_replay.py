@@ -200,6 +200,25 @@ class TestHardFailuresAndEscalation(Base):
         self.assertEqual(rec["human_actions"], [{"kind": "click", "target": "Specialties"}])
         self.assertEqual([h["to"] for h in rec["control_history"]], ["human", "automation"])
 
+    def test_operator_instruction_is_plain_and_escalations_are_capped(self):
+        # human keeps pressing Enter without fixing anything
+        page = FakePage(broken={"Specialties", "Black Bean Crunchwrap Supreme®", "Fiesta Strips", "Seasoned Rice"})
+        calls = []
+
+        def operator(kind, summary):
+            calls.append(summary)
+            return OperatorResponse(mode="resume")
+
+        r = self.engine(page, operator=operator).run(ARTIFACT, {}, inject_failure_step=9)
+        self.assertEqual(r.status, "failure")
+        self.assertEqual(r.outcome_code, "too_many_escalations")
+        self.assertEqual(len(calls), ReplayEngine.MAX_ESCALATIONS)
+        recs = self.escalation_records()
+        self.assertIn("click 'Specialties'", recs[0]["operator_instruction"])
+        self.assertNotIn("__INJECTED", recs[0]["operator_instruction"])
+        self.assertIn("resumed here right after a human handoff", recs[1]["reason"])
+        self.assertTrue(all(rec["status"] == "unresolved" for rec in recs))
+
     def test_human_says_done_but_checkpoint_not_met_is_failure(self):
         def operator(kind, summary):
             return OperatorResponse(mode="finished", note="I think I fixed it")

@@ -35,6 +35,7 @@ from run_log import RunLog
 from schema import (Artifact, ArtifactValidationError, Locator, Step, artifact_from_dict, fill)
 
 Status = Literal["success", "business_outcome", "failure"]
+INJECT_PREFIX = "__INJECTED_BROKEN__ "
 
 
 @dataclass
@@ -63,6 +64,7 @@ class StepFailed(Exception):
 
 
 class ReplayEngine:
+    MAX_ESCALATIONS = 3
     """
     Wraps a surface adapter ("page", e.g. PlaywrightPage) and walks it
     through an artifact. The page only needs the small interface used below,
@@ -256,9 +258,24 @@ class ReplayEngine:
             return self._fail(ctx, "step_failed", msg, step=step.step_number, expected=f"{step.action} '{label}'",
                               observed=str(err)[:300])
 
+        # A resume that didn't actually fix things shows up as the very next
+        # step failing too. Cap the loop instead of paging the human forever.
+        if len(ctx.open_escalations) >= self.MAX_ESCALATIONS:
+            return self._fail(ctx, "too_many_escalations",
+                              msg + f" Already escalated {len(ctx.open_escalations)} times in this run; stopping.",
+                              step=step.step_number, expected=f"{step.action} '{label}'", observed=str(err)[:300])
+        if ctx.last_resume_step == step.step_number - 1:
+            msg += (f" NOTE: automation resumed here right after a human handoff at step {ctx.last_resume_step}, "
+                    f"so that step may not have been completed.")
+
         hint = self._checkpoint_hint(ctx)
+        human_label = label.replace(INJECT_PREFIX, "")
+        todo = {"click": f"click '{human_label}'", "type": f"type into '{human_label}'"}.get(
+            step.action, f"do step {step.step_number}")
+        todo += f" (this is step {step.step_number} of {len(ctx.art.steps)}), then come back here."
         rec = ctx.escalator.escalate(kind="stuck", capability=ctx.art.artifact_id, step_number=step.step_number,
-                                     reason=msg, expected=f"{step.action} '{label}'", checkpoint_hint=hint)
+                                     reason=msg, expected=f"{step.action} '{human_label}'", checkpoint_hint=hint,
+                                     todo=todo)
         ctx.open_escalations.append(rec)
         ctx.human_intervened = True
 
@@ -267,6 +284,7 @@ class ReplayEngine:
             # continues with the next recorded step. Later steps + the final
             # checkpoint are what prove the fix actually worked.
             log.event("resumed_after_human", step=step.step_number, next_step=step.step_number + 1)
+            ctx.last_resume_step = step.step_number
             return None
 
         # Human finished the flow. Never trust that blindly: verify ourselves.
@@ -383,6 +401,7 @@ class _RunCtx:
     substitutions: list = field(default_factory=list)
     open_escalations: list = field(default_factory=list)
     human_intervened: bool = False
+    last_resume_step: Optional[int] = None
 
 
 def _fill_loc(loc: Optional[Locator], params: dict) -> Optional[dict]:
@@ -432,7 +451,7 @@ def _inject_failure(art: Artifact, step_number: int) -> Artifact:
     art = dataclasses.replace(art, steps=[dataclasses.replace(s) for s in art.steps])
     for s in art.steps:
         if s.step_number == step_number and s.locator is not None:
-            s.locator = dataclasses.replace(s.locator, value=f"__INJECTED_BROKEN__ {s.locator.value}")
+            s.locator = dataclasses.replace(s.locator, value=INJECT_PREFIX + s.locator.value)
             s.fallback = None
             s.on_missing = None
             return art

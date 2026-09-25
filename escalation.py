@@ -74,11 +74,11 @@ def terminal_operator(kind: EscalationKind, summary: str) -> OperatorResponse:
         ans = input("\nType 'approve' to let automation perform this action, anything else to deny: ").strip().lower()
         note = input("Optional note for the record (press Enter to skip): ").strip()
         return OperatorResponse(mode="answered", decision="approve" if ans == "approve" else "deny", note=note)
-    print("\nWhen you're done in the browser, hand control back here:")
-    print("  - press ENTER        -> you fixed just this step; automation CONTINUES from the next step")
-    print("  - type 'done' + ENTER -> you finished the whole flow; automation just VERIFIES the result")
+    print("\n  WHEN YOU'RE DONE IN THE BROWSER, come back to this terminal and:")
+    print("    press ENTER            -> I did the ONE step above. Automation continues from the next step.")
+    print("    type done, then ENTER  -> I finished the WHOLE order myself. Automation only checks the result.")
     ans = input("> ").strip().lower()
-    note = input("In a few words, what did you do? (press Enter to skip): ").strip()
+    note = input("Optional: in a few words, what did you do? (ENTER to skip): ").strip()
     return OperatorResponse(mode="finished" if ans == "done" else "resume", note=note)
 
 
@@ -99,7 +99,7 @@ class Escalator:
             json.dump(redact_obj(record, self.secrets), f, indent=2, default=str)
 
     def escalate(self, *, kind: EscalationKind, capability: str, step_number, reason: str,
-                 expected: str = "", checkpoint_hint: str = "") -> dict:
+                 expected: str = "", checkpoint_hint: str = "", todo: str = "") -> dict:
         os.makedirs(self.out_dir, exist_ok=True)
         req_id = f"intervention_{int(time.time() * 1000)}"
         path = os.path.join(self.out_dir, f"{req_id}.json")
@@ -123,6 +123,7 @@ class Escalator:
             "reason": reason,
             "expected": expected,
             "checkpoint_hint": checkpoint_hint,
+            "operator_instruction": todo,
             "url_before": before_url,
             "screenshot": shot,
             "run_id": getattr(self.log, "run_id", None),
@@ -139,18 +140,17 @@ class Escalator:
 
         print("\n" + "=" * 64)
         print(f"ESCALATION ({kind}): human operator needed")
-        print(f"  Capability : {capability}")
-        print(f"  Step       : {step_number}")
+        print(f"  Capability : {capability}   Step: {step_number}")
         print(f"  Why        : {reason}")
-        if expected:
-            print(f"  Expected   : {expected}")
         print(f"  Record     : {path}")
-        print("  Control    : HUMAN. The automation will not touch the browser until you hand it back.")
+        print("  Control    : HUMAN. Automation will not touch the browser until you hand it back.")
         if kind == "stuck":
             print("  The browser window on your screen is the SAME live session.")
-            print("  Fix it / finish the flow there by hand.")
+            if todo:
+                print("")
+                print(f"  >>> YOUR JOB: in the browser, {todo}")
             if checkpoint_hint:
-                print(f"  When you hand back, automation will verify: {checkpoint_hint}")
+                print(f"  (At the end, automation will verify: {checkpoint_hint})")
         print("=" * 64)
 
         response = self.operator(kind, reason)

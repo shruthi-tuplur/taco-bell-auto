@@ -24,7 +24,8 @@ _HUMAN_CAPTURE_JS = """
     return (t.getAttribute('aria-label') || t.getAttribute('placeholder') ||
             (t.innerText || '').trim().slice(0, 60) || t.tagName).replace(/\\s+/g, ' ');
   };
-  document.addEventListener('click', (e) => {
+  // pointerdown (not click) so the event is sent BEFORE a link starts navigating away
+  document.addEventListener('pointerdown', (e) => {
     try { window.__humanAction({kind: 'click', target: label(e.target), url: location.href}); } catch (_) {}
   }, true);
   document.addEventListener('change', (e) => {
@@ -47,6 +48,9 @@ class PlaywrightPage:
         self.context.expose_binding("__humanAction", self._on_human_action)
         self.context.add_init_script(_HUMAN_CAPTURE_JS)
         self.page = self.context.new_page()
+        # Navigations are recorded from the Python side too, so a human's
+        # page change is captured even if the in-page event is lost mid-unload.
+        self.page.on("framenavigated", self._on_navigated)
         self.actions_log = []
         self.recovered_events = []      # interstitials dismissed, retries that saved a step, etc.
         self.last_typed_field = None
@@ -59,6 +63,10 @@ class PlaywrightPage:
             payload = dict(payload)
             payload["at"] = time.strftime("%H:%M:%S")
             self._human_actions.append(payload)
+
+    def _on_navigated(self, frame):
+        if self._capturing and frame == self.page.main_frame:
+            self._human_actions.append({"kind": "navigated", "url": frame.url, "at": time.strftime("%H:%M:%S")})
 
     def start_human_capture(self):
         self._human_actions = []
