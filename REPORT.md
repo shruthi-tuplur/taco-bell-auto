@@ -130,12 +130,16 @@ If a resume did not actually fix things, the next step fails and escalates again
 
 ## 7. Cuts
 
+**Stretch goals attempted**
+- **Confidence and approval (approval half).** Discovery only ever saves artifacts as `draft`. `promote.py` marks one `approved` after a human reviews it, and `replay.py --require-approved` refuses to run anything that isn't approved. That is how an unattended production caller would run. I did not build the confidence score half (see multi-run stability below).
+- **Canonicalization (parameterization half).** Discovery automatically rewrites the concrete values it used into typed placeholders (for example "San Jose, CA" becomes `{{location}}` and "Large Nacho Fries" becomes `{{side_item}}`), which is what turns one recording into a reusable capability. The cross-tenant half (one base artifact applied to a second variant of the same app) is designed in section 4 but not built.
+
 **Deliberately left out**
 - **Operator web console and remote session viewing.** Mocked with the terminal plus headed browser (see section 5). The record format and control-state model are the real parts.
 - **Legacy-web and desktop adapters, tenant overlays.** Designed in section 4, not built.
 - **Assisted LLM fallback during replay.** Replay is fully deterministic; a failure goes to a human, never back to the model.
 - **Robust output extraction.** `order_total` uses a named extractor (regex on "Subtotal"), which is fine for one app but should become a declared extraction rule (locator plus pattern) in the artifact.
-- **Multi-run stability scoring.**
+- **Multi-run stability scoring.** I cut this on purpose, for three reasons. First, the only live surface is a real third-party site, and running the same order N times in a row means creating N real carts at a real restaurant's stores, which goes against the brief's ask to respect a public site's terms and rate limits. Second, a stability score measured on a live consumer site mixes up two different things: flakiness in my engine, and normal changes on the site (a store closing, a menu item selling out, a promo banner). In the real environment those have different owners, so one number that blends them would be misleading. The right place to measure engine stability is a stable surface, like the included mock app or a vendor sandbox. Third, the brief says to pick at most one or two stretch goals, and I chose the approval gate because it is part of the safety story. The data a stability score needs is already recorded: every replay logs which locator strategy matched each step and how long it took, and I did replay the same artifact more than once with the same result and order total. Scoring is a thin layer on top of that, and it is #2 on my next-steps list.
 
 **Known weak spots**
 - Step 3 of the recorded Taco Bell flow targets an icon-only search button that the LLM named just "button". It replays via the positional fallback (the button next to the field just typed into). The fallback is now restricted to the click immediately after typing and logged as low confidence, but the right fix is re-recording with the button's real accessible name.
